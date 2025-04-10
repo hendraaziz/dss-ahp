@@ -28,6 +28,11 @@
             </div>
         </form>
     </div>
+    <?php if(!$_GET['tema']): ?>
+    <div class="alert alert-info">
+        Silakan pilih tema terlebih dahulu untuk melihat data alternatif.
+    </div>
+    <?php else: ?>
     <div class="table-responsive">
         <table class="table table-bordered table-hover table-striped">
             <thead>
@@ -65,4 +70,5 @@
             <?php endforeach ?>
         </table>
     </div>
+    <?php endif; ?>
 </div>

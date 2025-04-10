@@ -53,12 +53,17 @@ foreach ($rows as $row) {
     );
 }
 
-function get_kriteria_option($selected = '')
+function get_kriteria_option($selected = '', $tema = '')
 {
     global $db;
+    $where = "";
+    if($tema) {
+        $where = "WHERE k.kode_tema='$tema'";
+    }
     $rows = $db->get_results("SELECT k.kode_kriteria, k.nama_kriteria, t.nama_tema 
         FROM tb_kriteria k 
         LEFT JOIN tb_tema t ON t.kode_tema=k.kode_tema 
+        $where
         ORDER BY k.kode_kriteria");
     $a = '';
     foreach ($rows as $row) {
@@ -119,28 +124,31 @@ function get_sub_option($selected = '', $kode_kriteria)
     return $a;
 }
 
-function get_relkriteria()
-{
+function get_relkriteria($tema = null) {
     global $db;
-    $data = array();
-    $rows = $db->get_results("SELECT k.nama_kriteria, rk.ID1, rk.ID2, nilai 
-        FROM tb_rel_kriteria rk INNER JOIN tb_kriteria k ON k.kode_kriteria=rk.ID1 
-        ORDER BY ID1, ID2");
-    foreach ($rows as $row) {
-        $data[$row->ID1][$row->ID2] = $row->nilai;
+    $rows = $db->get_results("SELECT k.kode_kriteria, k2.kode_kriteria AS kode_kriteria2, nilai 
+        FROM tb_kriteria k 
+        INNER JOIN tb_rel_kriteria r ON r.ID1=k.kode_kriteria
+        INNER JOIN tb_kriteria k2 ON k2.kode_kriteria=r.ID2
+        WHERE k.kode_tema='$tema' AND k2.kode_tema=k.kode_tema
+        ORDER BY k.kode_kriteria, k2.kode_kriteria");
+    $matriks = array();
+    foreach($rows as $row){
+        $matriks[$row->kode_kriteria][$row->kode_kriteria2] = $row->nilai;
     }
-    return $data;
+    return $matriks;
 }
 
 function get_rel_alternatif($kriteria = '')
 {
     global $db;
+    $tema = $_GET['tema'];
     $rows = $db->get_results("SELECT
        a.kode_alternatif, ra.kode_kriteria, s.kode_sub                	            
        FROM tb_rel_alternatif ra 
        INNER JOIN tb_alternatif a ON a.kode_alternatif = ra.kode_alternatif
        LEFT JOIN tb_sub s ON s.kode_sub=ra.kode_sub
-       WHERE nama_alternatif LIKE '%" . esc_field($_GET['q']) . "%'
+       WHERE a.kode_tema='$tema' AND nama_alternatif LIKE '%" . esc_field($_GET['q']) . "%'
        ORDER BY kode_alternatif, ra.kode_kriteria");
     $arr = array();
     foreach ($rows as $row) {

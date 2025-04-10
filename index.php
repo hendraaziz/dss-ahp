@@ -44,12 +44,12 @@ if (empty($_SESSION['login']))
 					<li><a href="?m=tema"><span class="glyphicon glyphicon-book"></span> Tema DSS</a></li>
 					<li><a href="?m=kriteria"><span class="glyphicon glyphicon-th-large"></span> Kriteria</a></li>
 					<li><a href="?m=sub"><span class="glyphicon glyphicon-th-list"></span> Subkriteria</a></li>
-					<li><a href="?m=alternatif"><span class="glyphicon glyphicon-th"></span> Alternatif</a></li>
+					<li><a href="?m=alternatif"><span class="glyphicon glyphicon-user"></span> Alternatif</a></li>
 					<li class="dropdown">
-						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span class="glyphicon glyphicon-user"></span> Nilai Bobot<span class="caret"></span></a>
+						<a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><span class="glyphicon glyphicon-scale"></span> Nilai Bobot<span class="caret"></span></a>
 						<ul class="dropdown-menu" role="menu">
 							<li><a href="?m=rel_kriteria"><span class="glyphicon glyphicon-th-large"></span> Nilai bobot kriteria</a></li>
-							<li><a href="?m=rel_sub"><span class="glyphicon glyphicon-user"></span> Nilai bobot subkriteria</a></li>
+							<li><a href="?m=rel_sub"><span class="glyphicon glyphicon-th-list"></span> Nilai bobot subkriteria</a></li>
 							<li><a href="?m=rel_alternatif"><span class="glyphicon glyphicon-user"></span> Nilai bobot alternatif</a></li>
 						</ul>
 					</li>

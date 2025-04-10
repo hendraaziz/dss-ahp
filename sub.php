@@ -1,5 +1,5 @@
 <div class="page-header">
-    <h1>Sub</h1>
+    <h1>Sub Kriteria</h1>
 </div>
 <div class="panel panel-default">
     <div class="panel-heading">
@@ -7,6 +7,21 @@
             <input type="hidden" name="m" value="sub" />
             <div class="form-group">
                 <input class="form-control" type="text" placeholder="Pencarian. . ." name="q" value="<?= $_GET['q'] ?>" />
+            </div>
+            <div class="form-group">
+                <select class="form-control" name="tema">
+                    <option value="">Semua Tema</option>
+                    <?php
+                    $rows = $db->get_results("SELECT * FROM tb_tema ORDER BY kode_tema");
+                    foreach($rows as $row){
+                        $selected = $_GET['tema']==$row->kode_tema ? 'selected' : '';
+                        echo "<option value='$row->kode_tema' $selected>$row->nama_tema</option>";
+                    }
+                    ?>
+                </select>
+            </div>
+            <div class="form-group">
+                <button class="btn btn-success"><span class="glyphicon glyphicon-refresh"></span> Refresh</button>
             </div>
             <div class="form-group">
                 <a style="background-color: #981A40;" class="btn btn-default" href="?m=sub_tambah"><span class="glyphicon glyphicon-plus"></span> Tambah</a>
@@ -26,9 +41,14 @@
             </thead>
             <?php
             $q = esc_field($_GET['q']);
+            $tema = $_GET['tema'];
+            $where = "nama_sub LIKE '%$q%'";
+            if($tema) {
+                $where .= " AND k.kode_tema='$tema'";
+            }
             $rows = $db->get_results("SELECT * FROM tb_sub s
                 INNER JOIN tb_kriteria k ON s.kode_kriteria=k.kode_kriteria 
-                WHERE nama_sub LIKE '%$q%' ORDER BY k.kode_kriteria, s.kode_sub");
+                WHERE $where ORDER BY k.kode_kriteria, s.kode_sub");
             $no = 0;
             foreach ($rows as $row) : ?>
                 <tr>

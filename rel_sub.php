@@ -6,9 +6,29 @@
         <form class="form-inline">
             <input type="hidden" name="m" value="rel_sub" />
             <div class="form-group">
+                <select class="form-control" name="tema" onchange="this.form.submit()">
+                    <option value="">Pilih tema</option>
+                    <?php
+                    $rows = $db->get_results("SELECT * FROM tb_tema ORDER BY kode_tema");
+                    foreach($rows as $row){
+                        $selected = $_GET['tema']==$row->kode_tema ? 'selected' : '';
+                        echo "<option value='$row->kode_tema' $selected>$row->nama_tema</option>";
+                    }
+                    ?>
+                </select>
+            </div>
+            <div class="form-group">
                 <select class="form-control" name="kode_kriteria" onchange="this.form.submit()">
                     <option value="">Pilih kriteria</option>
-                    <?= get_kriteria_option($_GET['kode_kriteria']) ?>
+                    <?php
+                    if($_GET['tema']){
+                        $rows = $db->get_results("SELECT * FROM tb_kriteria WHERE kode_tema='$_GET[tema]' ORDER BY kode_kriteria");
+                        foreach($rows as $row){
+                            $selected = $_GET['kode_kriteria']==$row->kode_kriteria ? 'selected' : '';
+                            echo "<option value='$row->kode_kriteria' $selected>$row->nama_kriteria</option>";
+                        }
+                    }
+                    ?>
                 </select>
             </div>
         </form>

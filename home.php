@@ -14,7 +14,7 @@
     <br>
     <br>
     <h4>
-        <p>Aziz Hendra Atmaja - 24/546050/PPA/06833</p>
+        <p>AZIZ HENDRA ATMAJA - 24/546050/PPA/06833</p>
     </h4>
     <h4>
         <p>SELVIANISA CAHYA MUKTI - 24/545982/PPA/06831</p>

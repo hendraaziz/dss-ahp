@@ -13,9 +13,12 @@ $row = $db->get_row("SELECT * FROM tb_alternatif WHERE kode_alternatif='$_GET[ID
     <div class="col-sm-4">
         <form method="post" action="aksi.php?act=rel_alternatif_ubah">
             <?php
-            $rows = $db->get_results("SELECT ra.ID, k.kode_kriteria, k.nama_kriteria, ra.kode_sub
-                FROM tb_rel_alternatif ra INNER JOIN tb_kriteria k ON k.kode_kriteria=ra.kode_kriteria  
-                WHERE kode_alternatif='$_GET[ID]' ORDER BY kode_kriteria");
+            $alternatif = $db->get_row("SELECT * FROM tb_alternatif WHERE kode_alternatif='$_GET[ID]'");
+            $rows = $db->get_results("SELECT k.kode_kriteria, k.nama_kriteria, COALESCE(ra.ID, '') as ID, COALESCE(ra.kode_sub, '') as kode_sub
+                FROM tb_kriteria k 
+                LEFT JOIN tb_rel_alternatif ra ON k.kode_kriteria=ra.kode_kriteria AND ra.kode_alternatif='$_GET[ID]'
+                WHERE k.kode_tema='$alternatif->kode_tema' 
+                ORDER BY k.kode_kriteria");
             foreach ($rows as $row) : ?>
                 <div class="form-group">
                     <label><?= $row->nama_kriteria ?></label>

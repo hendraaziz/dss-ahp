@@ -5,8 +5,17 @@ class DB
     public $insert_id = 0;
 
     public function __construct($host, $username, $passwd, $dbname)
-    {
-        $this->conn = mysqli_connect($host, $username, $passwd, $dbname);
+    {   
+        #$this->conn = mysqli_connect($host, $username, $passwd, $dbname);
+        global $config;
+        if (isset($config['ssl'])) {
+            mysqli_ssl_set($this->conn, NULL, NULL, $config['ssl']['ca'], NULL, NULL);
+        }
+        $port = isset($config['port']) ? $config['port'] : 3306;
+        $this->conn = mysqli_connect($host, $username, $passwd, $dbname, $port);
+        if (isset($config['ssl']) && $config['ssl']['verify_server_cert']) {
+            mysqli_options($this->conn, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, true);
+        }
     }
 
     public function query($sql)
