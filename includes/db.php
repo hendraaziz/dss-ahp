@@ -3,19 +3,34 @@ class DB
 {
     var $conn = null;
     public $insert_id = 0;
-
-    public function __construct($host, $username, $passwd, $dbname)
+    
+    public function __construct($host = null, $username = null, $passwd = null, $dbname = null)
     {   
-        #$this->conn = mysqli_connect($host, $username, $passwd, $dbname);
         global $config;
-        if (isset($config['ssl'])) {
-            mysqli_ssl_set($this->conn, NULL, NULL, $config['ssl']['ca'], NULL, NULL);
+        
+        // Menggunakan konfigurasi cloud jika parameter host kosong
+        if ($host === null) {
+            $config_active = $config;
+        } else {
+            $config_active = array(
+                'server' => $host,
+                'username' => $username,
+                'password' => $passwd,
+                'database_name' => $dbname
+            );
         }
-        $port = isset($config['port']) ? $config['port'] : 3306;
-        $this->conn = mysqli_connect($host, $username, $passwd, $dbname, $port);
-        if (isset($config['ssl']) && $config['ssl']['verify_server_cert']) {
-            mysqli_options($this->conn, MYSQLI_OPT_SSL_VERIFY_SERVER_CERT, true);
+        
+        $this->conn = mysqli_connect(
+            $config_active['server'], 
+            $config_active['username'], 
+            $config_active['password'], 
+            $config_active['database_name']
+        );
+        
+        if (!$this->conn) {
+            die('Koneksi Database Gagal: ' . mysqli_connect_error());
         }
+
     }
 
     public function query($sql)

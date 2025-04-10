@@ -4,7 +4,8 @@ session_start();
 
 include 'config.php';
 include 'includes/db.php';
-$db = new DB($config['server'], $config['username'], $config['password'], $config['database_name']);
+// Inisialisasi koneksi database menggunakan konfigurasi lokal
+$db = new DB();
 include 'includes/general.php';
 include 'includes/paging.php';
 
