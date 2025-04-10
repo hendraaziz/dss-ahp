@@ -3,6 +3,8 @@
 </div>
 
 <?php
+// Halaman perhitungan AHP (Analytical Hierarchy Process)
+// Menampilkan form pilih tema jika belum ada tema yang dipilih
 if(!isset($_GET['tema'])){
 ?>
 <div class="panel panel-primary">
@@ -28,16 +30,23 @@ if(!isset($_GET['tema'])){
 </div>
 <?php
 } else {
+    // Mengambil ID tema yang dipilih
     $tema = $_GET['tema'];
+    
+    // Mengambil matriks perbandingan berpasangan antar kriteria dari database
+    // Fungsi get_relkriteria() ada di functions.php
     $matriks = get_relkriteria($tema);
     if(empty($matriks)){
         echo "<div class='alert alert-warning'>Belum ada data perbandingan kriteria untuk tema ini.</div>";
         return;
     }
+    
+    // Menghitung jumlah kolom matriks untuk normalisasi
+    // Fungsi get_baris_total() ada di functions.php
     $total = get_baris_total($matriks);
     ?>
     <div class="page-header">
-        <h1>Perhitungan</h1>
+        <h1></h1>
         <div class="row">
             <div class="col-md-4">
                 <form class="form-inline">
@@ -110,8 +119,16 @@ if(!isset($_GET['tema'])){
                             <tr>
                                 <th>Kode</th>
                                 <?php
+                                // Normalisasi matriks dengan membagi setiap elemen dengan jumlah kolomnya
+                                // Fungsi normalize() ada di functions.php
                                 $normal = normalize($matriks, $total);
+                                
+                                // Menghitung nilai prioritas/bobot kriteria (rata-rata baris matriks normal)
+                                // Fungsi get_rata() ada di functions.php
                                 $rata = get_rata($normal);
+                                
+                                // Menghitung nilai consistency measure untuk uji konsistensi
+                                // Fungsi consistency_measure() ada di functions.php
                                 $cm = consistency_measure($matriks, $rata);
                                 foreach ($matriks as $key => $val) : ?>
                                     <th><?= $key ?></th>
@@ -168,11 +185,12 @@ if(!isset($_GET['tema'])){
                 </div>
                 <div class="panel-body">
                     <?php
-                    $JML = array_sum($cm);
-                    $LMD = ((array_sum($cm) / count($cm)) - count($cm));
-                    $CI = ((array_sum($cm) / count($cm)) - count($cm)) / (count($cm) - 1);
-                    $RI = $nRI[count($matriks)];
-                    $CR = $CI / $RI;
+                    // Menghitung nilai-nilai untuk uji konsistensi
+                    $JML = array_sum($cm); // Jumlah total nilai consistency measure
+                    $LMD = ((array_sum($cm) / count($cm)) - count($cm)); // Lambda max
+                    $CI = ((array_sum($cm) / count($cm)) - count($cm)) / (count($cm) - 1); // Consistency Index
+                    $RI = $nRI[count($matriks)]; // Ratio Index berdasarkan ordo matriks
+                    $CR = $CI / $RI; // Consistency Ratio = CI/RI
                     echo "<p>Jumlah: " . round($JML, 3) . "<br />";
                     echo "&lambda;max: " . round($LMD, 3) . "<br />";
                     echo "Consistency Index: " . round($CI, 3) . "<br />";

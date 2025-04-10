@@ -125,6 +125,13 @@ function get_sub_option($selected = '', $kode_kriteria)
     return $a;
 }
 
+/**
+ * Mengambil matriks perbandingan berpasangan antar kriteria
+ * Data diambil dari tabel tb_rel_kriteria yang berisi nilai perbandingan
+ * Nilai perbandingan menunjukkan tingkat kepentingan antara kriteria i dan j
+ * @param string $tema ID tema yang dipilih
+ * @return array Matriks perbandingan berpasangan kriteria
+ */
 function get_relkriteria($tema = null) {
     global $db;
     $rows = $db->get_results("SELECT k.kode_kriteria, k2.kode_kriteria AS kode_kriteria2, nilai 
@@ -148,8 +155,9 @@ function get_rel_alternatif($kriteria = '')
        a.kode_alternatif, ra.kode_kriteria, s.kode_sub                	            
        FROM tb_rel_alternatif ra 
        INNER JOIN tb_alternatif a ON a.kode_alternatif = ra.kode_alternatif
+       INNER JOIN tb_kriteria k ON k.kode_kriteria = ra.kode_kriteria
        LEFT JOIN tb_sub s ON s.kode_sub=ra.kode_sub
-       WHERE a.kode_tema='$tema' AND nama_alternatif LIKE '%" . esc_field($_GET['q']) . "%'
+       WHERE a.kode_tema='$tema' AND k.kode_tema='$tema' AND nama_alternatif LIKE '%" . esc_field($_GET['q']) . "%'
        ORDER BY kode_alternatif, ra.kode_kriteria");
     $arr = array();
     foreach ($rows as $row) {
@@ -159,6 +167,13 @@ function get_rel_alternatif($kriteria = '')
 }
 
 
+/**
+ * Menghitung jumlah kolom dari matriks perbandingan berpasangan
+ * Rumus: Σaij, dimana i=1,2,...,n
+ * Hasil penjumlahan digunakan untuk normalisasi matriks
+ * @param array $matriks Matriks perbandingan berpasangan
+ * @return array Total nilai per kolom
+ */
 function get_baris_total($matriks = array())
 {
     $total = array();
@@ -170,9 +185,16 @@ function get_baris_total($matriks = array())
     return $total;
 }
 
+/**
+ * Normalisasi matriks perbandingan berpasangan
+ * Rumus: aij / Σaij, dimana i=1,2,...,n
+ * Setiap elemen dibagi dengan jumlah kolom masing-masing
+ * @param array $matriks Matriks perbandingan berpasangan
+ * @param array $total Jumlah nilai per kolom
+ * @return array Matriks ternormalisasi
+ */
 function normalize($matriks = array(), $total = array())
 {
-
     foreach ($matriks as $key => $value) {
         foreach ($value as $k => $v) {
             $matriks[$key][$k] = $matriks[$key][$k] / $total[$k];
@@ -181,6 +203,13 @@ function normalize($matriks = array(), $total = array())
     return $matriks;
 }
 
+/**
+ * Menghitung nilai prioritas/bobot kriteria
+ * Rumus: Σ(aij/Σaij)/n, dimana i,j=1,2,...,n
+ * Rata-rata baris dari matriks ternormalisasi
+ * @param array $normal Matriks ternormalisasi
+ * @return array Nilai prioritas/bobot masing-masing kriteria
+ */
 function get_rata($normal)
 {
     $rata = array();
@@ -190,6 +219,14 @@ function get_rata($normal)
     return $rata;
 }
 
+/**
+ * Menghitung perkalian matriks dengan vektor prioritas
+ * Digunakan untuk menghitung rasio konsistensi
+ * Rumus: aij * wj, dimana i,j=1,2,...,n
+ * @param array $matriks Matriks perbandingan berpasangan
+ * @param array $rata Vektor prioritas/bobot kriteria
+ * @return array Hasil perkalian matriks dengan vektor prioritas
+ */
 function mmult($matriks = array(), $rata = array())
 {
     $arr = array();
