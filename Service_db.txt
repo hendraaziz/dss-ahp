@@ -1,5 +1,5 @@
 Service URI
-mysql://CLICK_TO:AVNS_kc9Th1h52YVxPc7WFOx@mysql-dssahp-dss-ahp.b.aivencloud.com:27151/defaultdb?ssl-mode=REQUIRED
+mysql://CLICK_TO:@mysql-dssahp-dss-ahp.b.aivencloud.com:27151/defaultdb?ssl-mode=REQUIRED
 
 Database name
 defaultdb
@@ -14,7 +14,7 @@ User
 avnadmin
 
 Password
-AVNS_kc9Th1h52YVxPc7WFOx
+
 
 
 
