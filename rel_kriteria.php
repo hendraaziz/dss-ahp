@@ -4,7 +4,7 @@
 <?php
 if ($_POST) include 'aksi.php';
 
-$tema = $_GET['tema'];
+$tema = isset($_GET['tema']) ? $_GET['tema'] : '';
 $where = "";
 if($tema) {
     $where = "WHERE k.kode_tema='$tema'";
@@ -33,7 +33,7 @@ foreach ($rows as $row) {
                     <?php
                     $rows_tema = $db->get_results("SELECT * FROM tb_tema ORDER BY kode_tema");
                     foreach($rows_tema as $row){
-                        $selected = $_GET['tema']==$row->kode_tema ? 'selected' : '';
+                        $selected = (isset($_GET['tema']) && $_GET['tema']==$row->kode_tema) ? 'selected' : '';
                         echo "<option value='$row->kode_tema' $selected>$row->nama_tema</option>";
                     }
                     ?>

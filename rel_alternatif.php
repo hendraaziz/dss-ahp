@@ -6,7 +6,7 @@
         <form class="form-inline">
             <input type="hidden" name="m" value="rel_alternatif" />
             <div class="form-group">
-                <input class="form-control" type="text" name="q" value="<?= $_GET['q'] ?>" placeholder="Pencarian..." />
+                <input class="form-control" type="text" name="q" value="<?= isset($_GET['q']) ? $_GET['q'] : '' ?>" placeholder="Pencarian..." />
             </div>
             <div class="form-group">
                 <select class="form-control" name="tema">
@@ -14,7 +14,7 @@
                     <?php
                     $rows = $db->get_results("SELECT * FROM tb_tema ORDER BY kode_tema");
                     foreach($rows as $row){
-                        $selected = $_GET['tema']==$row->kode_tema ? 'selected' : '';
+                        $selected = (isset($_GET['tema']) && $_GET['tema']==$row->kode_tema) ? 'selected' : '';
                         echo "<option value='$row->kode_tema' $selected>$row->nama_tema</option>";
                     }
                     ?>
@@ -25,7 +25,7 @@
             </div>
         </form>
     </div>
-    <?php if(!$_GET['tema']): ?>
+    <?php if(!isset($_GET['tema']) || !$_GET['tema']): ?>
     <div class="alert alert-info">
         Silakan pilih tema terlebih dahulu untuk melihat data alternatif.
     </div>
@@ -37,7 +37,7 @@
                     <th>Kode</th>
                     <th>Nama Alternatif</th>
                     <?php 
-                    $tema = $_GET['tema'];
+                    $tema = isset($_GET['tema']) ? $_GET['tema'] : '';
                     $KRITERIA = array();
                     $rows = $db->get_results("SELECT * FROM tb_kriteria WHERE kode_tema='$tema' ORDER BY kode_kriteria");
                     foreach($rows as $row){

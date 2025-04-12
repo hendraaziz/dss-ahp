@@ -64,7 +64,7 @@ if (empty($_SESSION['login']))
 
 	<div class="container">
 		<?php
-		if (file_exists($mod . '.php'))
+		if ($mod && file_exists($mod . '.php'))
 			include $mod . '.php';
 		else
 			include 'home.php';

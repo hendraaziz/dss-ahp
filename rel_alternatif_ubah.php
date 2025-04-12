@@ -1,5 +1,5 @@
 <?php
-$row = $db->get_row("SELECT * FROM tb_alternatif WHERE kode_alternatif='$_GET[ID]'");
+$row = $db->get_row("SELECT a.*, t.nama_tema FROM tb_alternatif a LEFT JOIN tb_tema t ON a.kode_tema=t.kode_tema WHERE a.kode_alternatif='$_GET[ID]'");
 ?>
 <div class="page-header">
     <h1>Ubah Nilai Bobot &raquo; <small><?= $row->nama_alternatif ?></small></h1>
@@ -13,7 +13,7 @@ $row = $db->get_row("SELECT * FROM tb_alternatif WHERE kode_alternatif='$_GET[ID
     <div class="col-sm-4">
         <form method="post" action="aksi.php?act=rel_alternatif_ubah">
             <?php
-            $alternatif = $db->get_row("SELECT * FROM tb_alternatif WHERE kode_alternatif='$_GET[ID]'");
+            $alternatif = $db->get_row("SELECT a.*, t.nama_tema FROM tb_alternatif a LEFT JOIN tb_tema t ON a.kode_tema=t.kode_tema WHERE a.kode_alternatif='$_GET[ID]'");
             $rows = $db->get_results("SELECT k.kode_kriteria, k.nama_kriteria, COALESCE(ra.ID, '') as ID, COALESCE(ra.kode_sub, '') as kode_sub
                 FROM tb_kriteria k 
                 LEFT JOIN tb_rel_alternatif ra ON k.kode_kriteria=ra.kode_kriteria AND ra.kode_alternatif='$_GET[ID]'
@@ -23,7 +23,7 @@ $row = $db->get_row("SELECT * FROM tb_alternatif WHERE kode_alternatif='$_GET[ID
                 <div class="form-group">
                     <label><?= $row->nama_kriteria ?></label>
                     <select class="form-control" name="nilai[<?= $row->ID ?>]">
-                        <?= get_sub_option($row->kode_sub, $row->kode_kriteria) ?>
+                        <?= get_sub_option($row->kode_kriteria, $row->kode_sub) ?>
                     </select>
                 </div>
             <?php endforeach ?>

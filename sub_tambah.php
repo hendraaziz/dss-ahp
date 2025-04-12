@@ -9,16 +9,16 @@
                 <label>Kriteria <span class="text-danger">*</span></label>
                 <select class="form-control" name="kode_kriteria">
                     <option value=""></option>
-                    <?= get_kriteria_option($_POST['kode_kriteria']) ?>
+                    <?= get_kriteria_option(isset($_POST['kode_kriteria']) ? $_POST['kode_kriteria'] : '') ?>
                 </select>
             </div>
             <div class="form-group">
                 <label>Kode <span class="text-danger">*</span></label>
-                <input class="form-control" type="text" name="kode" value="<?= $_POST['kode'] ?>" />
+                <input class="form-control" type="text" name="kode" value="<?= isset($_POST['kode']) ? $_POST['kode'] : '' ?>" required/>
             </div>
             <div class="form-group">
                 <label>Nama sub <span class="text-danger">*</span></label>
-                <input class="form-control" type="text" name="nama" value="<?= $_POST['nama'] ?>" />
+                <input class="form-control" type="text" name="nama" value="<?= isset($_POST['nama']) ? $_POST['nama'] : '' ?>" required/>
             </div>
             <div class="form-group">
                 <button class="btn btn-primary"><span class="glyphicon glyphicon-save"></span> Simpan</button>

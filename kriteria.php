@@ -6,7 +6,7 @@
         <form class="form-inline">
             <input type="hidden" name="m" value="kriteria" />
             <div class="form-group">
-                <input class="form-control" type="text" placeholder="Pencarian..." name="q" value="<?=$_GET['q']?>" />
+                <input class="form-control" type="text" placeholder="Pencarian..." name="q" value="<?=isset($_GET['q']) ? $_GET['q'] : ''?>" />
             </div>
             <div class="form-group">
                 <select class="form-control" name="tema">
@@ -40,8 +40,8 @@
                 </tr>
             </thead>
             <?php
-            $q = esc_field($_GET['q']);
-            $tema = $_GET['tema'];
+            $q = esc_field(isset($_GET['q']) ? $_GET['q'] : '');
+            $tema = isset($_GET['tema']) ? $_GET['tema'] : '';
             $where = "WHERE (kode_kriteria LIKE '%$q%' OR nama_kriteria LIKE '%$q%')";
             if($tema)
                 $where .= " AND k.kode_tema='$tema'";

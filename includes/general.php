@@ -2,6 +2,9 @@
 
 function esc_field($str)
 {
+    if ($str === null) {
+        return '';
+    }
     return addslashes($str);
 }
 

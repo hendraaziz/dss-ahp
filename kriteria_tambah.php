@@ -7,11 +7,11 @@
         <form method="post">
             <div class="form-group">
                 <label>Kode <span class="text-danger">*</span></label>
-                <input class="form-control" type="text" name="kode" value="<?= $_POST['kode'] ?>" />
+                <input class="form-control" type="text" name="kode" value="<?= isset($_POST['kode']) ? $_POST['kode'] : '' ?>" required/>
             </div>
             <div class="form-group">
                 <label>Nama Kriteria <span class="text-danger">*</span></label>
-                <input class="form-control" type="text" name="nama" value="<?=$_POST[nama]?>" required/>
+                <input class="form-control" type="text" name="nama" value="<?= isset($_POST['nama']) ? $_POST['nama'] : '' ?>" required/>
             </div>
             <div class="form-group">
                 <label>Tema DSS</label>
@@ -20,7 +20,8 @@
                     <?php
                     $rows = $db->get_results("SELECT * FROM tb_tema ORDER BY kode_tema");
                     foreach($rows as $row){
-                        echo "<option value='$row->kode_tema'>$row->nama_tema</option>";
+                        $selected = isset($_POST['kode_tema']) && $row->kode_tema == $_POST['kode_tema'] ? 'selected' : '';
+                        echo "<option value='$row->kode_tema' $selected>$row->nama_tema</option>";
                     }
                     ?>
                 </select>

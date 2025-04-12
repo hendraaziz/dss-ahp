@@ -19,8 +19,8 @@ function input_post($key)
     if (isset($_POST[$key]))
         return $_POST[$key];
 }
-$mod = $_GET['m'];
-$act = $_GET['act'];
+$mod = isset($_GET['m']) ? $_GET['m'] : '';
+$act = isset($_GET['act']) ? $_GET['act'] : '';
 
 $nRI = array(
     1 => 0,
@@ -110,7 +110,7 @@ function get_nilai_option($selected = '')
     }
     return $a;
 }
-function get_sub_option($selected = '', $kode_kriteria)
+function get_sub_option($kode_kriteria, $selected = '')
 {
     global $db;
     $where = "WHERE kode_kriteria='$kode_kriteria'";
@@ -150,18 +150,24 @@ function get_relkriteria($tema = null) {
 function get_rel_alternatif($kriteria = '')
 {
     global $db;
-    $tema = $_GET['tema'];
+    $tema = isset($_GET['tema']) ? $_GET['tema'] : '';
+    $q = isset($_GET['q']) ? esc_field($_GET['q']) : '';
     $rows = $db->get_results("SELECT
        a.kode_alternatif, ra.kode_kriteria, s.kode_sub                	            
        FROM tb_rel_alternatif ra 
        INNER JOIN tb_alternatif a ON a.kode_alternatif = ra.kode_alternatif
        INNER JOIN tb_kriteria k ON k.kode_kriteria = ra.kode_kriteria
        LEFT JOIN tb_sub s ON s.kode_sub=ra.kode_sub
-       WHERE a.kode_tema='$tema' AND k.kode_tema='$tema' AND nama_alternatif LIKE '%" . esc_field($_GET['q']) . "%'
+       WHERE a.kode_tema='$tema' AND k.kode_tema='$tema' AND nama_alternatif LIKE '%$q%'
        ORDER BY kode_alternatif, ra.kode_kriteria");
     $arr = array();
-    foreach ($rows as $row) {
-        $arr[$row->kode_alternatif][$row->kode_kriteria]  = $row->kode_sub;
+    if ($rows) {
+        foreach ($rows as $row) {
+            if (!isset($arr[$row->kode_alternatif])) {
+                $arr[$row->kode_alternatif] = array();
+            }
+            $arr[$row->kode_alternatif][$row->kode_kriteria] = $row->kode_sub;
+        }
     }
     return $arr;
 }
@@ -177,7 +183,16 @@ function get_rel_alternatif($kriteria = '')
 function get_baris_total($matriks = array())
 {
     $total = array();
-    foreach ($matriks as $key => $value) {
+    // Initialize total array with zeros for all possible keys
+    foreach ($matriks as $value) {
+        foreach ($value as $k => $v) {
+            if (!isset($total[$k])) {
+                $total[$k] = 0;
+            }
+        }
+    }
+    // Calculate the sum
+    foreach ($matriks as $value) {
         foreach ($value as $k => $v) {
             $total[$k] += $v;
         }
@@ -241,6 +256,7 @@ function mmult($matriks = array(), $rata = array())
 function consistency_measure($matriks, $rata)
 {
     $matriks = mmult($matriks, $rata);
+    $data = array();
     foreach ($matriks as $key => $value) {
         $data[$key] = array_sum($value) / $rata[$key];
     }

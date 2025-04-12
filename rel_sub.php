@@ -11,7 +11,7 @@
                     <?php
                     $rows = $db->get_results("SELECT * FROM tb_tema ORDER BY kode_tema");
                     foreach($rows as $row){
-                        $selected = $_GET['tema']==$row->kode_tema ? 'selected' : '';
+                        $selected = (isset($_GET['tema']) && $_GET['tema']==$row->kode_tema) ? 'selected' : '';
                         echo "<option value='$row->kode_tema' $selected>$row->nama_tema</option>";
                     }
                     ?>
@@ -21,10 +21,10 @@
                 <select class="form-control" name="kode_kriteria" onchange="this.form.submit()">
                     <option value="">Pilih kriteria</option>
                     <?php
-                    if($_GET['tema']){
-                        $rows = $db->get_results("SELECT * FROM tb_kriteria WHERE kode_tema='$_GET[tema]' ORDER BY kode_kriteria");
+                    if(isset($_GET['tema']) && $_GET['tema']){
+                        $rows = $db->get_results("SELECT * FROM tb_kriteria WHERE kode_tema='" . $_GET['tema'] . "' ORDER BY kode_kriteria");
                         foreach($rows as $row){
-                            $selected = $_GET['kode_kriteria']==$row->kode_kriteria ? 'selected' : '';
+                            $selected = (isset($_GET['kode_kriteria']) && $_GET['kode_kriteria']==$row->kode_kriteria) ? 'selected' : '';
                             echo "<option value='$row->kode_kriteria' $selected>$row->nama_kriteria</option>";
                         }
                     }
@@ -36,11 +36,12 @@
     <div class="panel-body">
         <?php
         if ($_POST) include 'aksi.php';
+        $kode_kriteria = isset($_GET['kode_kriteria']) && $_GET['kode_kriteria'] ? $_GET['kode_kriteria'] : '';
         $rows = $db->get_results("SELECT r.ID1, r.ID2, nilai 
             FROM tb_rel_sub r 
             INNER JOIN tb_sub s1 ON s1.kode_sub=r.ID1
             INNER JOIN tb_sub s2 ON s2.kode_sub=r.ID2
-            WHERE s1.kode_kriteria='$_GET[kode_kriteria]' AND s2.kode_kriteria='$_GET[kode_kriteria]'     
+            WHERE s1.kode_kriteria='$kode_kriteria' AND s2.kode_kriteria='$kode_kriteria'
             ORDER BY ID1, ID2");
         $criterias = array();
         $matriks = array();
@@ -56,10 +57,10 @@
         }
         $cm = consistency_measure($matriks, $rata);
         ?>
-        <form class="form-inline" action="?m=rel_sub&kode_kriteria=<?= $_GET['kode_kriteria'] ?>" method="post">
+        <form class="form-inline" action="?m=rel_sub&tema=<?= isset($_GET['tema']) ? $_GET['tema'] : '' ?>&kode_kriteria=<?= isset($_GET['kode_kriteria']) ? $_GET['kode_kriteria'] : '' ?>" method="post">
             <div class="form-group">
                 <select class="form-control" name="ID1">
-                    <?= get_sub_option($_POST['ID1'], $_GET['kode_kriteria']) ?>
+                    <?= get_sub_option($_GET['kode_kriteria'], $_POST['ID1']) ?>
                 </select>
             </div>
             <div class="form-group">
@@ -69,7 +70,7 @@
             </div>
             <div class="form-group">
                 <select class="form-control" name="ID2">
-                    <?= get_sub_option($_POST['ID2'], $_GET['kode_kriteria']) ?>
+                    <?= get_sub_option($_GET['kode_kriteria'], $_POST['ID2']) ?>
                 </select>
             </div>
             <div class="form-group">

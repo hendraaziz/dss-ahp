@@ -6,7 +6,7 @@
         <form class="form-inline">
             <input type="hidden" name="m" value="alternatif" />
             <div class="form-group">
-                <input class="form-control" type="text" placeholder="Pencarian. . ." name="q" value="<?= $_GET['q'] ?>" />
+                <input class="form-control" type="text" placeholder="Pencarian. . ." name="q" value="<?= isset($_GET['q']) ? $_GET['q'] : '' ?>" />
             </div>
             <div class="form-group">
                 <select class="form-control" name="tema">
@@ -14,7 +14,7 @@
                     <?php
                     $rows = $db->get_results("SELECT * FROM tb_tema ORDER BY kode_tema");
                     foreach($rows as $row){
-                        $selected = $_GET['tema']==$row->kode_tema ? 'selected' : '';
+                        $selected = (isset($_GET['tema']) && $_GET['tema']==$row->kode_tema) ? 'selected' : '';
                         echo "<option value='$row->kode_tema' $selected>$row->nama_tema</option>";
                     }
                     ?>
@@ -28,7 +28,7 @@
             </div>
         </form>
     </div>
-    <?php if(!$_GET['tema']): ?>
+    <?php if(!isset($_GET['tema']) || !$_GET['tema']): ?>
     <div class="alert alert-info">
         Silakan pilih tema terlebih dahulu untuk melihat data alternatif.
     </div>
@@ -45,8 +45,8 @@
                 </tr>
             </thead>
             <?php
-            $q = esc_field($_GET['q']);
-            $tema = $_GET['tema'];
+            $q = esc_field(isset($_GET['q']) ? $_GET['q'] : '');
+            $tema = isset($_GET['tema']) ? $_GET['tema'] : '';
             $where = "WHERE (kode_alternatif LIKE '%$q%' OR nama_alternatif LIKE '%$q%')";
             if($tema)
                 $where .= " AND a.kode_tema='$tema'";

@@ -317,9 +317,20 @@ if(!isset($_GET['tema'])){
                     global $SUB;
                     $arr = array();
 
+                    // Initialize array with zeros and validate keys
                     foreach ($hasil_bobot as $key => $val) {
-                        foreach ($val as $k => $v) {
-                            $arr[$key] += $v * $rata[$k];
+                        if (!empty($key)) { // Check for empty keys
+                            $arr[$key] = 0;
+                        }
+                    }
+
+                    foreach ($hasil_bobot as $key => $val) {
+                        if (!empty($key)) { // Skip empty keys
+                            foreach ($val as $k => $v) {
+                                if (!empty($k) && isset($rata[$k]) && is_numeric($v)) {
+                                    $arr[$key] += $v * $rata[$k];
+                                }
+                            }
                         }
                     }
                     return $arr;

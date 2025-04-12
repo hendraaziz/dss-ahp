@@ -10,15 +10,15 @@ include_once('functions.php');
         <form method="post">
             <div class="form-group">
                 <label>Kode <span class="text-danger">*</span></label>
-                <input class="form-control" type="text" name="kode_tema" value="<?=$_POST[kode_tema]?>" required/>
+                <input class="form-control" type="text" name="kode_tema" value="<?=isset($_POST['kode_tema']) ? $_POST['kode_tema'] : ''?>" required/>
             </div>
             <div class="form-group">
                 <label>Nama Tema <span class="text-danger">*</span></label>
-                <input class="form-control" type="text" name="nama_tema" value="<?=$_POST[nama_tema]?>" required/>
+                <input class="form-control" type="text" name="nama_tema" value="<?=isset($_POST['nama_tema']) ? $_POST['nama_tema'] : ''?>" required/>
             </div>
             <div class="form-group">
                 <label>Deskripsi</label>
-                <textarea class="form-control" name="deskripsi"><?=$_POST[deskripsi]?></textarea>
+                <textarea class="form-control" name="deskripsi"><?=isset($_POST['deskripsi']) ? $_POST['deskripsi'] : ''?></textarea>
             </div>
             <div class="form-group">
                 <button class="btn btn-primary"><span class="glyphicon glyphicon-save"></span> Simpan</button>
